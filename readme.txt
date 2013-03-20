@@ -4,7 +4,7 @@ Donate link: http://www.jeroenvanwissen.nl/weblog/wordpress/custom-sections
 Tags: widgets, posttype
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 0.2
+Stable tag: 0.3
 
 Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets
 
@@ -24,6 +24,9 @@ The custom post type must be created by the user in the functions.php, or a plug
 
 == Changelog ==
 
+= 0.3 (2013-3-20) =
+* Added Custom Sections Widget
+
 = 0.2 (2013-1-13) =
 * Refactored to Custom Sections
 
@@ -36,6 +39,7 @@ The custom post type must be created by the user in the functions.php, or a plug
 == TODO's ==
 
 * Create documentation
-* Integrate with TinyMCE 
 * Add some sample templates
 * Add optional internal custom post type
+* Add template selection in widghet
+* Add TinyMCE integration for shortcodes in pages/posts/CPTs

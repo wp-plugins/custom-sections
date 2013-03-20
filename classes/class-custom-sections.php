@@ -11,18 +11,21 @@ class CustomSections {
 	 * CustomSections constructor
 	 *
 	 * @since 0.1
+	 * @version 0.3
 	 * */
 	public function __construct( ) {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 99 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_shortcode( 'section', array( $this, 'sections_shortcode' ) );
+		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 	}
 
 	/**
 	 * admin_init function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function admin_init() {
 		// Register settings
@@ -32,9 +35,21 @@ class CustomSections {
 	}
 
 	/**
+	 * register_widget function
+	 *
+	 * @since 0.3
+	 * @version 0.3
+	 * */
+	public function register_widget() {
+		require_once CUSTOMSECTIONS_PATH . '/classes/class-custom-sections-widget.php';
+		register_widget( 'CustomSectionsWidget' );
+	}
+
+	/**
 	 * sections_options_validate function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function sections_options_validate( $input ) {
 		return $input;
@@ -44,6 +59,7 @@ class CustomSections {
 	 * sections_description function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function sections_description() {
 		echo '<p></p>';
@@ -53,6 +69,7 @@ class CustomSections {
 	 * sections_post_type_field function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function sections_post_type_field() {
 		$options = get_option( 'sections_options' );
@@ -82,6 +99,7 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function admin_head() {
 		$options = get_option( 'sections_options' );
@@ -96,6 +114,7 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function admin_menu() {
 		add_options_page( 'Sections', 'Sections', 'manage_options', 'sections', array( $this, 'sections_menu' ) );
@@ -105,6 +124,7 @@ class CustomSections {
 	 * sections_menu function
 	 *
 	 * @since 0.1
+	 * @version 0.2
 	 * */
 	public function sections_menu() {
 		include CUSTOMSECTIONS_PATH . '/admin/settings.php';
@@ -114,6 +134,7 @@ class CustomSections {
 	 * shortcode_meta_box function
 	 *
 	 * @since 0.1
+	 * @version 0.2
 	 * */
 	public function shortcode_meta_box() {
 		include CUSTOMSECTIONS_PATH . '/admin/shortcode.php';
@@ -123,6 +144,7 @@ class CustomSections {
 	 * sections_shortcode function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public function sections_shortcode( $args ) {
 		global $post;
@@ -148,6 +170,7 @@ class CustomSections {
 	 * show_section function
 	 *
 	 * @since 0.1
+	 * @version 0.1
 	 * */
 	public static function show_section( $id, $options = array() ) {
 		global $post, $section;
@@ -202,6 +225,7 @@ class CustomSections {
 	 * @uses load_template()
 	 * @uses get_template_part()
 	 * @since 0.1
+	 * @version 0.2
 	 * */
 	protected function load_template( $slug, $name = null ) {
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
