@@ -4,7 +4,7 @@ Donate link: http://www.jeroenvanwissen.nl/weblog/wordpress/custom-sections
 Tags: widgets, posttype
 Requires at least: 3.3
 Tested up to: 3.8
-Stable tag: 0.4
+Stable tag: 0.4.1
 
 Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets
 
@@ -12,7 +12,7 @@ Custom Sections is a WordPress plugin that gives you an alternative to the defau
 
 Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets. Custom Sections are pieces of content to be used as shortcode or directly in your theme.
 
-To use custom template files for sections, files must be named section-<name>.php
+To use custom template files for sections, files must be named section-templatename.php
 
 == Installation ==
 
@@ -20,11 +20,14 @@ To use custom template files for sections, files must be named section-<name>.ph
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to Settings -> Custom Sections to configure the custom post type to be used as section.
 
-The custom post type must be created by the user in the functions.php, or a plugin that can create custom post types without programming.
+The custom post type can optionaly be created by the user in the functions.php, or via a plugin that can create custom post types without programming.
 
 == Screenshots ==
 
 == Changelog ==
+
+= 0.4.1 (2014-1-4) =
+* Fixes in readme.txt
 
 = 0.4 (2014-1-4) =
 * Added internal custom post type ( 'custom-sections' )
