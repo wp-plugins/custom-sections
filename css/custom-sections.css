@@ -1,0 +1,14 @@
+#custom_sections .actions {
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+}
+
+#custom_sections fieldset {
+	margin: 5px 10px;
+}
+
+#custom_sections label {
+	width: 150px;
+	display: inline-block;	
+}

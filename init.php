@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Custom Sections
+Version: 0.4
 Plugin URI: http://www.jeroenvanwissen.nl/weblog/wordpress/custom-sections
 Description: Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets. Custom Sections are pieces of content to be used as shortcode or directly in your theme.
-Version: 0.3
 Author: W!SSEN
 Author URI: http://jeroenvanwissen.nl/
 
