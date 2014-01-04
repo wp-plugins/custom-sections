@@ -4,6 +4,8 @@
  * CustomSectionsWidget class
  *
  * @package CustomSections
+ * @since 0.3
+ * @version 0.4
  * */
 class CustomSectionsWidget extends WP_Widget {
 
@@ -23,9 +25,12 @@ class CustomSectionsWidget extends WP_Widget {
 	 * widget function
 	 *
 	 * @since 0.3
-	 * @version 0.3
+	 * @version 0.4
 	 * */
 	public function widget( $args, $instance ) {
+		global $post, $section;
+		$sections_options = get_option( 'sections_options' );
+
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		echo $args['before_widget'];
@@ -34,21 +39,32 @@ class CustomSectionsWidget extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
+		$content = '';
+
 		if ( isset( $instance['customsectionpost'] ) ) {
-			$options = get_option( 'sections_options' );
-			$query = new WP_Query( array(
-					'post_type' => $options['post_type'],
+			$section = new WP_Query( array(
+					'post_type' => $sections_options['post_type'],
 					'p' => $instance['customsectionpost']
 				) );
 
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				$content = get_the_content();
-				$content = apply_filters( 'the_content', $content );
-				echo $content;
+			if ( isset($instance['customsectiontemplate']) && !empty($instance['customsectiontemplate']) ) {
+				while ( $section->have_posts() ) {
+					$section->the_post();
+					ob_start();
+					self::load_template( 'section', $instance['customsectiontemplate'] );
+					$content = ob_get_contents();
+					ob_end_clean();
+				}
+			} else {
+				while ( $section->have_posts() ) {
+					$section->the_post();
+					$content = get_the_content();
+					$content = apply_filters( 'the_content', $content );
+				}
 			}
 		}
 
+		echo $content;
 		echo $args['after_widget'];
 
 	}
@@ -57,13 +73,14 @@ class CustomSectionsWidget extends WP_Widget {
 	 * update function
 	 *
 	 * @since 0.3
-	 * @version 0.3
+	 * @version 0.4
 	 * */
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		$instance['customsectionpost'] = $new_instance['customsectionpost'];
+		$instance['customsectiontemplate'] = $new_instance['customsectiontemplate'];
 
 		return $instance;
 	}
@@ -72,10 +89,10 @@ class CustomSectionsWidget extends WP_Widget {
 	 * form function
 	 *
 	 * @since 0.3
-	 * @version 0.3
+	 * @version 0.4
 	 * */
 	public function form( $instance ) {
-		$defaults = array( 'title' => '', 'customsectionpost' => '' );
+		$defaults = array( 'title' => '', 'customsectionpost' => '', 'customsectiontemplate' => '' );
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		include CUSTOMSECTIONS_PATH . '/admin/widget-options.php';
 	}
@@ -93,7 +110,7 @@ class CustomSectionsWidget extends WP_Widget {
 	 * @since 0.3
 	 * @version 0.3
 	 * */
-	protected function load_template( $slug, $name = null ) {
+	protected static function load_template( $slug, $name = null ) {
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )

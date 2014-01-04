@@ -4,6 +4,8 @@
  * CustomSections class
  *
  * @package CustomSections
+ * @since 0.1
+ * @version 0.4
  * */
 class CustomSections {
 
@@ -11,7 +13,7 @@ class CustomSections {
 	 * CustomSections constructor
 	 *
 	 * @since 0.1
-	 * @version 0.3
+	 * @version 0.4
 	 * */
 	public function __construct( ) {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -19,19 +21,51 @@ class CustomSections {
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_shortcode( 'section', array( $this, 'sections_shortcode' ) );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'media_buttons_context',  array( $this, 'media_buttons' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_add_script') );
+
+		if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php'))){
+			add_action('admin_footer',  array( $this, 'add_popup'));
+		}
+	}
+
+	/**
+	 * register_post_type function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function register_post_type()
+	{
+		$options = get_option( 'sections_options' );
+
+		if ( $options['internal_post_type'] === true && $options['post_type'] == 'custom-sections' ) {
+			$args = array(
+				'exclude_from_search' => true,
+				'show_ui' => true,
+				'public' => false,
+				'label' => 'Sections',
+				'rewrite' => false,
+				'query_var' => false,
+				'show_in_nav_menus' => false
+			);
+			register_post_type( 'custom-sections', $args );
+		}
 	}
 
 	/**
 	 * admin_init function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_init() {
 		// Register settings
 		register_setting( 'sections_options', 'sections_options', array( $this, 'sections_options_validate' ) );
 		add_settings_section( 'sections_main', __( 'Select the custom post type to use as Sections post type' ), array( $this, 'sections_description' ), 'sections' );
-		add_settings_field( 'sections_post_type_field', __( 'Sections Post Type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
+		add_settings_field( 'sections_internal_post_type_field', __( 'Use internal post type' ), array( $this, 'sections_internal_post_type_field' ), 'sections', 'sections_main' );
+		add_settings_field( 'sections_post_type_field', __( 'Existing post type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
 	}
 
 	/**
@@ -46,12 +80,44 @@ class CustomSections {
 	}
 
 	/**
+	 * admin_add_script function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function admin_add_script()
+	{
+		wp_enqueue_script('custom-sections', plugins_url('../js/custom-sections.js', __FILE__), array('jquery'), false, true);
+		wp_enqueue_style('custom-sections', plugins_url('../css/custom-sections.css', __FILE__));
+	}
+
+	/**
+	 * media_buttons function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function media_buttons($context)
+	{
+		$context .= '<a href="#TB_inline?width=400&inlineId=select_custom_section" class="thickbox button" id="add_custom_section" title="' . __("Add Custom Section") . '"><span class="custom_section_icon "></span> ' . __("Add Custom Section") . '</a>';
+//		$context .= '<a href="#" id="insert-section-button" class="button insert-section add_section" data-editor="content" title="Add Section"><span class="wp-media-buttons-icon"></span> Add Section</a>';
+		return $context;
+	}
+
+	public function add_popup() {
+		include CUSTOMSECTIONS_PATH . '/admin/popup.php';
+	}
+	/**
 	 * sections_options_validate function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function sections_options_validate( $input ) {
+		if (isset($input['internal_post_type']) && $input['internal_post_type'] == 'on') {
+			$input['internal_post_type'] = true;
+			$input['post_type'] = 'custom-sections';
+		}
 		return $input;
 	}
 
@@ -62,7 +128,26 @@ class CustomSections {
 	 * @version 0.1
 	 * */
 	public function sections_description() {
-		echo '<p></p>';
+		echo '<p>Choose to use internal custom post type ( "custom-sections" ) or select an existing custom post type.</p>';
+	}
+
+	/**
+	 * sections_internal_post_type_field function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 * */
+	public function sections_internal_post_type_field() {
+		$options = get_option( 'sections_options' );
+
+		$html = '<input type="checkbox" ';
+		$html .= 'name="sections_options[internal_post_type]" ';
+		if (isset($options['internal_post_type']) && $options['internal_post_type'] === true) {
+			$html .= 'checked="checked"';
+		}
+		$html .= '/> ( "custom-sections" )';
+
+		echo $html;
 	}
 
 	/**
@@ -99,13 +184,13 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_head() {
 		$options = get_option( 'sections_options' );
 		if ( isset( $GLOBALS['post_type'] ) && $GLOBALS['post_type'] == $options['post_type'] ) {
 			if ( $GLOBALS['pagenow'] == 'post.php' ) {
-				add_meta_box( 'sections-shortcode', 'Shortcode', array( $this, 'shortcode_meta_box' ), $options['post_type'], 'normal', 'high' );
+				add_meta_box( 'sections-shortcode', 'Custom Section Shortcode', array( $this, 'shortcode_meta_box' ), $options['post_type'], 'normal', 'high' );
 			}
 		}
 	}
@@ -114,10 +199,10 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_menu() {
-		add_options_page( 'Sections', 'Sections', 'manage_options', 'sections', array( $this, 'sections_menu' ) );
+		add_options_page( 'Custom Sections', 'Custom Sections', 'manage_options', 'sections', array( $this, 'sections_menu' ) );
 	}
 
 	/**
@@ -170,7 +255,7 @@ class CustomSections {
 	 * show_section function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public static function show_section( $id, $options = array() ) {
 		global $post, $section;
@@ -190,10 +275,14 @@ class CustomSections {
 			// TODO: Add filters for security of filename etc..
 			if ( isset( $options['template'] ) && !empty( $options['template'] ) ) {
 
-				ob_start();
-				self::load_template( 'sections', $options['template'] );
-				$output = ob_get_contents();
-				ob_end_clean();
+				if ( $section->have_posts() ) {
+					$section->the_post();
+					
+					ob_start();
+					self::load_template( 'section', $options['template'] );
+					$output = ob_get_contents();
+					ob_end_clean();
+				}
 
 			} else {
 
@@ -215,6 +304,56 @@ class CustomSections {
 	}
 
 	/**
+	 * get_section_templates function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public static function get_section_templates() {
+		$page_templates = array();
+		$files = (array) wp_get_theme()->get_files( 'php', 1 );
+
+		foreach ( $files as $file => $full_path ) {
+			if ( ! preg_match( '|section-(.*).php$|mi', $full_path, $match ) )
+				continue;
+			$page_templates[ $file ] = ( $match[1] );
+		}
+		return $page_templates;
+	}
+
+	/**
+	 * get_section_posts function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public static function get_section_posts()
+	{
+		global $post;
+		$sections_posts = array();
+		$sections_options = get_option( 'sections_options' );
+		$query = new WP_Query(array(
+			'post_type' => $sections_options['post_type'],
+			'posts_per_page' => -1,
+			'post_status' => 'publish'
+		));
+
+		if ($query->have_posts()) {
+			while ( $query->have_posts() ) {
+					$query->the_post();
+					$sections_posts[] = array(
+						'id' => $post->ID,
+						'name' => $post->post_name,
+						'title' => $post->post_title
+					);
+			}
+		}
+		wp_reset_query();
+
+		return $sections_posts;
+	}
+
+	/**
 	 * Load Template
 	 *
 	 * If exists, load template file from theme
@@ -227,7 +366,7 @@ class CustomSections {
 	 * @since 0.1
 	 * @version 0.2
 	 * */
-	protected function load_template( $slug, $name = null ) {
+	protected static function load_template( $slug, $name = null ) {
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )
