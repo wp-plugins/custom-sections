@@ -1,11 +1,11 @@
 <p>
-	<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title:', 'customsections'); ?></label>
+	<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title:', 'custom-sections'); ?></label>
 	<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>">
 </p>
 <p>
-	<label for="<?php echo $this->get_field_id( 'customsectionpost' ); ?>"><?php _e('Custon Section Post:', 'customsections'); ?></label>
+	<label for="<?php echo $this->get_field_id( 'customsectionpost' ); ?>"><?php _e('Custon Section Post:', 'custom-sections'); ?></label>
 	<select name="<?php echo $this->get_field_name( 'customsectionpost' ); ?>" id="<?php echo $this->get_field_id( 'customsectionpost' ); ?>" class="widefat">
-		<option value=""><?php _e('Select Section', 'customsections' ); ?></option>
+		<option value=""><?php _e('Select Section', 'custom-sections' ); ?></option>
 		<?php
 		$options = get_option( 'sections_options' );
 		$query = new WP_Query(array(
@@ -28,9 +28,9 @@
 	</select>
 </p>
 <p>
-	<label for="<?php echo $this->get_field_id( 'customsectiontemplate' ); ?>"><?php _e('Custom Section Template:', 'customsections'); ?></label>
+	<label for="<?php echo $this->get_field_id( 'customsectiontemplate' ); ?>"><?php _e('Custom Section Template:', 'custom-sections'); ?></label>
 	<select name="<?php echo $this->get_field_name( 'customsectiontemplate' ); ?>" id="<?php echo $this->get_field_id( 'customsectiontemplate' ); ?>" class="widefat">
-		<option value=""><?php _e('Select Template', 'customsections' ); ?></option>
+		<option value=""><?php _e('Select Template', 'custom-sections' ); ?></option>
 		<?php
 		$templates = CustomSections::get_section_templates();
 		foreach ($templates as $file => $template) {

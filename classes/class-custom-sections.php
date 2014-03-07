@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.1
- * @version 0.4
+ * @version 0.4.3
  * */
 class CustomSections {
 
@@ -307,16 +307,27 @@ class CustomSections {
 	 * get_section_templates function
 	 *
 	 * @since 0.4
-	 * @version 0.4
+	 * @version 0.4.3
 	 **/
 	public static function get_section_templates() {
 		$page_templates = array();
-		$files = (array) wp_get_theme()->get_files( 'php', 1 );
+		$files = (array) wp_get_theme()->get_files( 'php' );
+
+		// Also check in parent theme for section theme files.
+		if ( wp_get_theme()->parent() ) {
+			$files = array_merge( $files, wp_get_theme()->parent()->get_files( 'php' ) );
+		}
 
 		foreach ( $files as $file => $full_path ) {
 			if ( ! preg_match( '|section-(.*).php$|mi', $full_path, $match ) )
 				continue;
-			$page_templates[ $file ] = ( $match[1] );
+
+			if ( preg_match( '|Template Name:(.*)$|mi', file_get_contents( $full_path ), $header ) ) {
+				$page_templates[ $match[1] ] = _cleanup_header_comment( $header[1] );
+			} else {
+				$page_templates[ $match[1] ] = ( $file );
+			}
+
 		}
 		return $page_templates;
 	}
