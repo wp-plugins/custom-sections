@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.1
- * @version 0.4.3
+ * @version 0.4.4
  * */
 class CustomSections {
 
@@ -34,13 +34,13 @@ class CustomSections {
 	 * register_post_type function
 	 *
 	 * @since 0.4
-	 * @version 0.4
+	 * @version 0.4.4
 	 **/
 	public function register_post_type()
 	{
 		$options = get_option( 'sections_options' );
 
-		if ( $options['internal_post_type'] === true && $options['post_type'] == 'custom-sections' ) {
+		if ( isset($options['internal_post_type']) && $options['internal_post_type'] === true && isset($options['post_type']) && $options['post_type'] == 'custom-sections' ) {
 			$args = array(
 				'exclude_from_search' => true,
 				'show_ui' => true,
