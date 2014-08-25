@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.1
- * @version 0.4.4
+ * @version 0.4.5
  * */
 class CustomSections {
 
@@ -375,9 +375,13 @@ class CustomSections {
 	 * @uses load_template()
 	 * @uses get_template_part()
 	 * @since 0.1
-	 * @version 0.2
+	 * @version 0.4.5
 	 * */
 	protected static function load_template( $slug, $name = null ) {
+
+		// Extra filter to remove html special chars
+		$name = preg_replace( "/&#?[a-z0-9]{2,8};/i", "", $name );
+	
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )
