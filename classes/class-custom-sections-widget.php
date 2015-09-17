@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.3
- * @version 0.4.3
+ * @version 0.4.6
  * */
 class CustomSectionsWidget extends WP_Widget {
 
@@ -13,12 +13,12 @@ class CustomSectionsWidget extends WP_Widget {
 	 * CustomSectionsWidget constructor
 	 *
 	 * @since 0.3
-	 * @version 0.3
+	 * @version 0.4.6
 	 * */
 	public function __construct( ) {
 		$widget_ops = array();
 		$control_ops = array();
-		$this->WP_Widget( 'customsections-widget', __( 'Custom Sections Widget', 'custom-sections' ), $widget_ops, $control_ops );
+		parent::__construct( 'customsections-widget', __( 'Custom Sections Widget', 'custom-sections' ), $widget_ops, $control_ops );
 	}
 
 	/**

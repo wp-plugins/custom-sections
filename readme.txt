@@ -3,8 +3,8 @@ Contributors: jvwissen
 Donate link: http://www.jeroenvanwissen.nl/weblog/wordpress/custom-sections
 Tags: widgets, posttype
 Requires at least: 3.3
-Tested up to: 3.9.2
-Stable tag: 0.4.5
+Tested up to: 4.3.1
+Stable tag: 0.4.7
 
 Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets
 
@@ -25,6 +25,12 @@ The custom post type can optionaly be created by the user in the functions.php, 
 == Screenshots ==
 
 == Changelog ==
+
+= 0.4.7 (2015-9-17) =
+* Removed check that prevented to have a section in a section. Use at own risk, could cause infinite loading.
+
+= 0.4.6 (2015-8-17) =
+* Fixed: In preparation for supporting PHP7, WordPress 4.3 is deprecating the use of PHP 4 style class constructors. The proper method is to extend WP_Widget in your class and call parent::__construct().
 
 = 0.4.5 (2014-8-25) =
 * Added filter to remove html special chars from the section template filename.
