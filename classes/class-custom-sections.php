@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.1
- * @version 0.4.7
+ * @version 0.4.8
  * */
 class CustomSections {
 
@@ -245,6 +245,33 @@ class CustomSections {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * show_section function
+	 *
+	 * @since 0.4.8
+	 * @version 0.4.8
+	 * */
+	public static function section_exists( $id ) {
+		global $post;
+		$sections_options = get_option( 'sections_options' );
+		$args = false;
+		$have_posts = false;
+
+		if ( is_numeric( $id ) ) {
+			$args = array( 'p' => $id, 'post_type' => $sections_options['post_type'] );
+		} elseif ( is_string( $id ) ) {
+			$args = array( 'name' => $id, 'post_type' => $sections_options['post_type'] );
+		}
+		
+		if ( $args ) {
+			$section = new WP_Query( $args );
+			$have_posts = $section->have_posts();
+			wp_reset_postdata();
+		}
+
+		return $have_posts;
 	}
 
 	/**
